@@ -1,0 +1,53 @@
+1. Install the Python and Pip First. 
+
+2. Install the python venv (isolated env for the python). 
+
+┌──(ashraful㉿kali)-[~/Django/Practise]
+└─$ sudo apt install python3-venv -y
+
+
+3. create e virtualEnv folder with active virtualEnv. 
+
+┌──(ashraful㉿kali)-[~/Django/Practise]
+└─$ python3 -m venv .myenv_folderName
+
+
+
+
+# active the virtual ENV
+
+┌──(ashraful㉿kali)-[~/Django/Practise]
+└─$ source .myenv/bin/activate    
+
+# deactive the virtualEnv
+
+┌──(ashraful㉿kali)-[~/Django/Practise]
+└─$ deactivate
+
+# install the django => django not create any folder for the project . 
+┌──(.myenv)─(ashraful㉿kali)-[~/Django/Practise]
+└─$ pip install django 
+
+>>> mkdir djangoProject >>> cd djangoProject
+
+# create the first project with the django in root folder > 
+
+┌──(.myenv)─(ashraful㉿kali)-[~/Django/Practise/.myenv/djangoSite]
+└─$ django-admin startproject mysite .
+
+# run the django project 
+
+┌──(.myenv)─(ashraful㉿kali)-[~/Django/Practise/.myenv/djangoSite]
+└─$ python manage.py runserver 
+                                         
+# run the django project with custom port
+
+┌──(.myenv)─(ashraful㉿kali)-[~/Django/Practise/.myenv/djangoSite]
+└─$ python manage.py runserver 8000
+
+
+
+
+
+
+                                         

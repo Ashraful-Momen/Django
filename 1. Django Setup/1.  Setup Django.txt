@@ -48,6 +48,35 @@
 
 
 
+-----------------------------------install django package extension for vs-code: or install according to need----------------------
+
+django extension for VS-Code ....
+
+1. Django
+2. Django-inteligence
+3. Copy-Django-model field
+4. Django-Snippet
+5. Sourcy
+6. and Python also....
+
+---------------------------------------------------------------------------------------------
+
+Django Project => is a combination of multiple application=> registration, comments, login, blog, .... every task done by
+                different application. 
+
+--------------------------------------Create Apps inside Django Project-------------------------------------------------------
+*** there are lot's off app in one Django project....
+
+>>> python manage.py startapp First_App [Create Apps inside the project.]
+
+*** connect App to the Django project ... 
+>>> goto main project file >>> setting.py => Install_App=['write_down_appName'].
+
+-------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
 
 
                                          

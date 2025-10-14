@@ -73,10 +73,3 @@ Django Project => is a combination of multiple application=> registration, comme
 >>> goto main project file >>> setting.py => Install_App=['write_down_appName'].
 
 -------------------------------------------------------------------------------------------------------------------------------
-
-
-
-
-
-
-                                         

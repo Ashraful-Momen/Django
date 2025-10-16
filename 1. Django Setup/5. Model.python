@@ -1,124 +1,113 @@
+----------------------------------------------------------------------------------------------------------------------
+-------------------------------------------****DJANGO MODEL COMPLETE NOTE****------------------------------------------
+----------------------------------------------------------------------------------------------------------------------
 
-----------------------------------------------------------------------------------------------------------------------
--------------------------------------------****Django Model****---------------------------------------------------------------------------
-----------------------------------------------------------------------------------------------------------------------
-Every individual app has its own model.py file for database setup => Example: first_app::models.py =>
-------------------------------------first_app::models.py---------------------------------------
+Every individual Django App has its own model file for database management:
+➡ Example:  first_app/models.py
+
+------------------------------------ first_app/models.py ---------------------------------------
 from django.db import models
 
 # Create your models here.
 
 class Musician(models.Model):
-    # id = models.AutoField(primary_key=True)  # Django takes this automatically
-    first_name = models.CharField(max_length=50)  #(max_length=50, null=True or blank=True)
-    last_name = models.CharField(max_length=50)
+    # id=models.AutoField(primary_key=True)  ← Django takes it automatically
+    first_name = models.CharField(max_length=50)   # can use (null=True, blank=True)
+    last_name  = models.CharField(max_length=50)
     instrument = models.CharField(max_length=50)
 
-    # show the variable :
+    # show the variable in admin or shell:
     def __str__(self):
         return self.first_name + " " + self.last_name
 
 
 class Album(models.Model):
-    # id = models.AutoField(primary_key=True)  # Django takes this automatically
-    artist = models.ForeignKey('Musician', on_delete=models.CASCADE)  # ForeignKey relation
+    artist = models.ForeignKey('Musician', on_delete=models.CASCADE)  # ForeignKey Relation
     name = models.CharField(max_length=50)
     release_date = models.DateField()
     num_star = models.IntegerField()
 
------------------------------------------Command for model: after change model then run--------------------------------
->>> python manage.py makemigrations first_app   <- (App Name)
->>> python manage.py migrate
 ----------------------------------------------------------------------------------------------------------------------
-----------------------------------------Model Object Access------------------------------------------------------------------------------
->>> python manage.py shell
+-------------------------------------------MODEL COMMANDS--------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------
 
-Then shell will be executed
+After creating or changing model fields:
+
+>>> python manage.py makemigrations first_app     # (App Name)
+>>> python manage.py migrate                      # Apply database migration
+
+----------------------------------------------------------------------------------------------------------------------
+-------------------------------------------MODEL OBJECT ACCESS----------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------
+
+>>> python manage.py shell      # open Django interactive shell
+
+then:
 
 >>> from first_app.models import Musician
->>> print(Musician.objects.all())   <- [Print/show Musician table data]
 
-Insert data into table :
+✅ Show table data:
+>>> print(Musician.objects.all())
+
+✅ Insert data into table:
 >>> obj = Musician(first_name='Md.Ashraful', last_name='Shuvo', instrument='Guitar')
 >>> obj.save()
 
-Show data from table :
+✅ OR shorthand:
+>>> Musician.objects.create(first_name='Jane', last_name='Smith', instrument='Piano')
+
+✅ Show all:
 >>> print(Musician.objects.all())
+<QuerySet [<Musician: Md.Ashraful Shuvo>, <Musician: Jane Smith>]>
 
------------------------------
->>> python manage.py makemigrations first_app
->>> python manage.py migrate
---------------------------
->>> from first_app.models import Musician
->>> print(Musician.objects.all())
-<QuerySet [<Musician: Ashraful Momen>, <Musician: Shuvo Momen>]>
->>> 
----------------------------
-Create : 
-----------
-from first_app.models import Musician, Album
+✅ Get single record (by primary key):
+>>> Musician.objects.get(pk=1)
 
-# create and save
-m = Musician(first_name='John', last_name='Doe', instrument='Guitar')
-m.save()
+✅ Filter data:
+>>> Musician.objects.filter(instrument__icontains='guitar')
 
-# shorthand
-m2 = Musician.objects.create(first_name='Jane', last_name='Smith', instrument='Piano')
+✅ Count total records:
+>>> Musician.objects.count()
 
-List of all musicians : 
-----------------------
-Musician.objects.all()
-# e.g. <QuerySet [<Musician: John Doe>, <Musician: Jane Smith>]>
+✅ Delete record:
+>>> Musician.objects.filter(first_name='John').delete()
 
-Get one (by primary key): 
--------------------------
-Musician.objects.get(pk=1)
+✅ Create Album related to Musician:
+>>> artist = Musician.objects.first()
+>>> Album.objects.create(artist=artist, name='First Album', release_date='2023-01-01', num_star=5)
 
-Filter: 
--------
-Musician.objects.filter(instrument__icontains='guitar')
-
-Count: 
-------
-Musician.objects.count()
-
-Create an Album related to a musician: 
--------------------------------------
-artist = Musician.objects.first()          # pick an artist
-album = Album.objects.create(artist=artist, name='First Album', release_date='2023-01-01', num_star=5)
-
-Delete : 
-----------
-Musician.objects.filter(first_name='John').delete()
 
 ----------------------------------------------------------------------------------------------------------------------
-------------------------------------------------Model: Site----------------------------------------------------------------------
------------------------------------------------Admin Superuser Command-----------------------------------------------------------------------
-First register those tables/models in => first_app::admin.py  then =>
----------------------------------=> first_app::admin.py ---------------
+---------------------------------------------REGISTER MODEL TO ADMIN SITE----------------------------------------------
+----------------------------------------------------------------------------------------------------------------------
+
+First, register your models in => first_app/admin.py
+
+--------------------------------- first_app/admin.py ---------------------------------
 from django.contrib import admin
 from first_app.models import Musician, Album
 
-# Register your models here.
 admin.site.register(Musician)
 admin.site.register(Album)
-------------------------------------------------
+---------------------------------------------------------------------------------------
 
->>> python manage.py createsuperuser   [Complete -> userName, passWord]
+Then create admin superuser:
+>>> python manage.py createsuperuser
 
->>> Then go to => 127.0.0.1:8000/admin  → LogIN with userName and passWord 
+✅ Complete username, email, and password setup  
+✅ Run server and go to: 127.0.0.1:8000/admin  
+✅ Login using created credentials
 
 ----------------------------------------------------------------------------------------------------------------------
---------------------------------------------Models (More Examples: Rating Options)--------------------------------------------------------------------------
--------------------------------------------first_app::models.py---------------------------------------------------------------------------
+-----------------------------------------MODEL WITH CHOICE FIELD (RATING EXAMPLE)--------------------------------------
+----------------------------------------------------------------------------------------------------------------------
+
+------------------------------------ first_app/models.py ---------------------------------------
 from django.db import models
 
-# Create your models here.
-
 class Musician(models.Model):
-    # id = models.AutoField(primary_key=True)
     first_name = models.CharField(max_length=50)
-    last_name = models.CharField(max_length=50)
+    last_name  = models.CharField(max_length=50)
     instrument = models.CharField(max_length=50)
 
     def __str__(self):
@@ -142,30 +131,33 @@ class Album(models.Model):
 
     def __str__(self):
         return self.name + " , Rating: " + str(self.num_star)
------------------------------
+---------------------------------------------------------------------------------------
+
 >>> python manage.py makemigrations first_app 
 >>> python manage.py migrate
---------------------------
-----------------------------------------------------------------------------------------------------------------------
----------------------------------------Model Data to Show Template (MVT)-------------------------------------------------------------------------------
-----------------------------------------------------------------------------------------------------------------------
-{{ use print variable }}
-{% use if/else, forLoop, or conditionals %} 
 
-----------------------------------------first_app::views.py------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------
+---------------------------------------MODEL DATA TO TEMPLATE (MVT STRUCTURE)------------------------------------------
+----------------------------------------------------------------------------------------------------------------------
+
+✅ Use print variables:
+{{ variable_name }}
+
+✅ Template logic supports:
+{% if %}, {% else %}, {% for %}, {% comment %}, etc.
+
+------------------------------------ first_app/views.py ---------------------------------------
 from django.shortcuts import render
-from django.http import HttpResponse
 from first_app.models import Musician, Album
 
 def index(request):
-    # SELECT * FROM Musician ORDER BY first_name   # raw MySQL query
-
-    musician_list = Musician.objects.order_by('first_name')  # ORM
+    # SELECT * FROM Musician ORDER BY first_name  ← SQL equivalent
+    musician_list = Musician.objects.order_by('first_name')
     dictionary = {"Musician_List": "All Musician's", "musician": musician_list}
     return render(request, 'first_app/index.html', context=dictionary)
 
 ----------------------------------------------------------------------------------------------------------------------
------------------------------------------template >> first_app::index.html-----------------------------------------------------------------------------
+----------------------------------------- TEMPLATE: first_app/templates/first_app/index.html --------------------------
 ----------------------------------------------------------------------------------------------------------------------
 <!DOCTYPE html>
 {% load static %}
@@ -181,9 +173,9 @@ def index(request):
     <table align="center" style="border:1px solid black; border-radius:10px;">
         <thead>
             <tr>
-                <th scope="col">First Name</th>
-                <th scope="col">Last Name</th>
-                <th scope="col">Instrument</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Instrument</th>
             </tr>
         </thead>
         <tbody>
@@ -198,6 +190,9 @@ def index(request):
     </table>
 </body>
 </html>
-------------------------------------------End Model----------------------------------------------------------------------------
-----------------------------------------------------------------------------------------------------------------------
 
+----------------------------------------------------------------------------------------------------------------------
+------------------------------------------END OF MODEL SECTION---------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------

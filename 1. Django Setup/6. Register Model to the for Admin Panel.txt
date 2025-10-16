@@ -1,0 +1,84 @@
+----------------------------------------------------------------------------------------------------------------------
+----------------------------------------****REGISTER MODEL TO ADMIN SITE****-------------------------------------------
+----------------------------------------------------------------------------------------------------------------------
+
+Django admin panel allows multiple ways to register models:
+➡ Path:  first_app/admin.py
+
+----------------------------------------------------------------------------------------------------------------------
+------------------------------------(1) BASIC REGISTRATION METHOD (EASY WAY)--------------------------------------------
+----------------------------------------------------------------------------------------------------------------------
+from django.contrib import admin
+from first_app.models import Musician, Album
+
+admin.site.register(Musician)
+admin.site.register(Album)
+
+✅ Simple, quick, good for small projects.
+
+----------------------------------------------------------------------------------------------------------------------
+------------------------------------(2) DECORATOR REGISTRATION METHOD (RECOMMENDED)------------------------------------
+----------------------------------------------------------------------------------------------------------------------
+from django.contrib import admin
+from first_app.models import Musician, Album
+
+# Customizing how data shows in admin panel
+@admin.register(Musician)
+class MusicianAdmin(admin.ModelAdmin):
+    list_display  = ('first_name', 'last_name', 'instrument')   # Show these fields in table view
+    search_fields = ('first_name', 'last_name')                 # Add search box
+    list_filter   = ('instrument',)                             # Filter sidebar
+    ordering      = ('first_name',)                             # Default order
+
+@admin.register(Album)
+class AlbumAdmin(admin.ModelAdmin):
+    list_display  = ('name', 'artist', 'release_date', 'num_star')
+    list_filter   = ('release_date', 'num_star')
+    search_fields = ('name',)
+    ordering      = ('-release_date',)
+
+✅ Use @admin.register(ModelName) → cleaner, supports custom admin settings.
+✅ Easier to maintain for multiple models.
+
+----------------------------------------------------------------------------------------------------------------------
+------------------------------------(3) CLASSIC REGISTRATION METHOD (MANUAL WAY)---------------------------------------
+----------------------------------------------------------------------------------------------------------------------
+from django.contrib import admin
+from first_app.models import Musician, Album
+
+class MusicianAdmin(admin.ModelAdmin):
+    list_display  = ('first_name', 'last_name', 'instrument')
+    search_fields = ('first_name', 'last_name')
+    list_filter   = ('instrument',)
+
+class AlbumAdmin(admin.ModelAdmin):
+    list_display  = ('name', 'artist', 'release_date', 'num_star')
+    list_filter   = ('release_date', 'num_star')
+
+# Register manually with custom admin class
+admin.site.register(Musician, MusicianAdmin)
+admin.site.register(Album, AlbumAdmin)
+
+✅ Same result as decorator but using classic function call style.
+✅ Useful when you prefer grouping registration at the bottom.
+
+----------------------------------------------------------------------------------------------------------------------
+------------------------------------(BONUS) REMOVE / UNREGISTER DEFAULT MODELS-----------------------------------------
+----------------------------------------------------------------------------------------------------------------------
+# Example: remove default models from admin site
+from django.contrib import admin
+from django.contrib.auth.models import Group
+
+admin.site.unregister(Group)
+
+----------------------------------------------------------------------------------------------------------------------
+------------------------------------------RUN ADMIN SERVER--------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------
+>>> python manage.py createsuperuser
+>>> python manage.py runserver
+👉 Go to: 127.0.0.1:8000/admin
+Login and see your registered models.
+
+----------------------------------------------------------------------------------------------------------------------
+------------------------------------------END ADMIN REGISTRATION--------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------

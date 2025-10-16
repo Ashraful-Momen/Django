@@ -1,0 +1,42 @@
+----------------------------------------------------------------------------------------------------------------------
+--------------------------------------static file(adding): img, css, js--------------------------------------------------------------------------------
+create a static folder in MainProject=>
+---------------------------------------
+
+=>MainProject::setting.py =>
+-----------------------------
+
+STATICS_DIR = BASE_DIR / 'static'
+
+
+STATIC_URL = 'static/'
+
+STATICFILES_DIRS=[
+    STATICS_DIR,
+]
+
+-----------------------goto index.html : where add the img---------------------------
+
+<!DOCTYPE html>
+{% load static %}  <--for adding img or static file-->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>This is the Home Page</title>
+</head>
+<body>
+    <h1>I'am form home page index.html</h1>
+    <p>this varable value comes from dictionary first_app/views.py => {{name}}</p>
+    <img src="{% static 'img/Logo.png' %}" >
+    <br>
+    <!-- <img src="static/img/Logo.png" > -->
+    <br/>
+    
+</body>
+</html>
+
+
+check that img is loading or not=> http://127.0.0.1:8000/static/img/Logo.png
+
+---------------------------------end static file-------------------------------------------------------------------------------------

@@ -1,0 +1,100 @@
+mysite/   <------------ main project
+├── manage.py
+├── mysite/
+│   └── settings.py
+├── First_App/  <------- app
+│   ├── views.py
+│   ├── urls.py
+│   └── ...
+└── templates/   <--------- folder for static files (html or django blade etc)
+    └── First_App/
+        └── index.html
+
+
+----------------------------------------------------
+
+
+main_project_file > settings.py 
+----------------------------------
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent.parent  #cd ../..
+TEMPLATE_DIR = BASE_DIR / 'templates'  # your templates folder path  => /home/ashraful/Django/Practise/.myenv/djangoSite/template
+
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [TEMPLATE_DIR],  # ✅ must be a list, not {'DIRS': ...}
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },
+]
+
+---------------------------------------------------
+mysite > urls.py 
+-----------------
+from django.contrib import admin
+from django.urls import path, include
+from First_App import views
+
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    
+   
+    #url.py mapping form First_App
+    path('', include('First_App.urls')),
+    
+]
+
+
+First_App > urls.py (app folder)
+----------------------------------
+from django.contrib import admin
+from django.urls import path
+
+
+from First_App import views
+
+
+
+urlpatterns = [
+   
+    path('First_App/', views.index, name='index'),
+     
+]
+
+
+First_App > views.py 
+---------------------
+from django.shortcuts import render
+
+#custom import file : __________________
+from django.http import HttpResponse
+
+
+
+
+# Create your views here.
+
+def index(request):
+    # return render(request, 'index.html')
+    # return HttpResponse("Hello, world. You're at the First_App index.")
+    
+    dictionary = {'insert_me': "Hello I'm from views.py"}
+    return render(request, 'First_App/index.html', context = dictionary)
+
+
+
+template > First_App > index.html 
+-----------------------------------
+<p>this varable value comes from dictionary first_app/views.py => {{insert_me}}</p>
+
+

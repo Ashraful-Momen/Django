@@ -1,0 +1,862 @@
+
+----------------------------------------------------------------------------------------------------------------------
+------------------------------------------Start=> Django: Form------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------
+>>> goto folder >> template >>> first_app ::: create file => form.html 
+----------------------------------------------------------------------
+<!doctype html>
+<html lang="en">
+{% load static %}
+<head>
+  <title>Title</title>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Bootstrap CSS v5.2.1 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+
+</head>
+
+<body>
+   <div class="container">
+   <div class="row">
+    <div class="col-md-12">
+        <h1 class="text-center">Form</h1>
+        <hr>
+        <form action="" method="" enctype="multipart/form-data">
+            
+            <div class="m-2 p-2">
+                <label for="">Name:</label>
+                <input type="text" name="" value="" placeholder="Type Your Name" class="form-control btn btn-outline-warning" >
+            </div>
+            
+            <input type="submit" class="form-control btn btn-success">
+    
+        </form>
+    </div>
+   </div>
+
+   </div>
+  <!-- Bootstrap JavaScript Libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
+    integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous">
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.min.js"
+    integrity="sha384-7VPbUDkoPSGFnVtYi0QogXtr74QeVeeIs99Qfg5YCF+TidwNdjvaKZX19NZ/e6oz" crossorigin="anonymous">
+  </script>
+</body>
+
+</html>
+----------------------------------------------------------------------
+
+>>>first_app::views.py =>
+-----------------------------
+from django.shortcuts import render
+from django.http import HttpResponse
+from first_app.models import Musician, Album
+
+
+
+def index(request):
+    # SELECT * FROM Musician ORDER BY first_name #raw MySQL query
+    musician_list = Musician.objects.order_by('first_name') #ORM
+    dictionary ={"Musician_List":"All Musician's","musician":musician_list}
+    return render(request,'first_app/index.html',context=dictionary)
+
+def form(request):
+    dictionary={}
+    return render(request, 'first_app/form.html',context=dictionary)
+-----------------------------
+
+>>>first_app::urls.py =>
+-----------------------------
+from django.urls import path
+from first_app import views 
+
+urlpatterns = [
+    path('', views.index, name='index'),
+    path('form/',views.form,name='form'),
+   
+]
+-----------------------------
+
+-------------------------------------------Model:part2 => django default form features---------------------------------------------------------------------------
+
+------------------------------------------create file-> first_app::form.py----------------------------------------------------------------------------
+first_app::form.py =>
+--------------------
+from django import forms
+
+class user_form(forms.Form):
+
+    # <div class="m-2 p-2">
+    #             <label for="">Name:</label>
+    #             <input type="text" name="" value="" placeholder="Type Your Name" class="form-control btn btn-outline-warning" >
+    # </div>
+    user_name = forms.CharField()
+
+
+
+    # <div class="m-2 p-2">
+    #             <label for="">Email:</label>
+    #             <input type="email" name="" value="" placeholder="Type Your Email" class="form-control btn btn-outline-warning" >
+    # </div>
+    user_email = forms.EmailField()
+-------------------------------------
+first_app::views.py =>
+-------------------------------------
+from django.shortcuts import render
+from django.http import HttpResponse
+from first_app.models import Musician, Album
+from first_app import forms
+
+def index(request):
+    # SELECT * FROM Musician ORDER BY first_name #raw MySQL query
+    musician_list = Musician.objects.order_by('first_name') #ORM
+    dictionary ={"Musician_List":"All Musician's","musician":musician_list}
+    return render(request,'first_app/index.html',context=dictionary)
+
+def form(request):
+    new_form = forms.user_form()
+    dictionary={'test_form':new_form,'heading1_form':"Django Default Forms!"}
+    return render(request, 'first_app/form.html',context=dictionary)
+-------------------------------------
+first_app::urls.py =>
+-------------------------------------
+from django.urls import path
+from first_app import views 
+
+urlpatterns = [
+    path('', views.index, name='index'),
+    path('form/',views.form,name='form'),
+   
+]
+-------------------------------------
+template>>>first_app:::form.html=>
+-------------------------------------
+<!doctype html>
+<html lang="en">
+{% load static %}
+<head>
+  <title>Title</title>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Bootstrap CSS v5.2.1 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+
+</head>
+
+<body>
+   <div class="container">
+   <div class="row">
+    <div class="col-md-12">
+        <h1 class="text-center">Form</h1>
+        <hr>
+        <form action="" method="" enctype="multipart/form-data " class="bg-danger" >
+            
+            <div class="m-2 p-2">
+                <label for="">Name:</label>
+                <input type="text" name="" value="" placeholder="Type Your Name" class="form-control btn btn-outline-warning" >
+            </div>
+            <div class="m-2 p-2">
+                <label for="">Email:</label>
+                <input type="email" name="" value="" placeholder="Type Your Email" class="form-control btn btn-outline-warning" >
+            </div>
+            
+            <div class="d-flex justify-content-center">
+                <input type="submit" class=" btn btn-dark " >
+            </div>
+                
+            
+    
+        </form>
+        <br>
+        <hr>
+        
+        <h1>{{heading1}}</h1>
+        <form action="" method="">
+            {{test_form}}
+
+        </form>
+    </div>
+   </div>
+
+   </div>
+  <!-- Bootstrap JavaScript Libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
+    integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous">
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.min.js"
+    integrity="sha384-7VPbUDkoPSGFnVtYi0QogXtr74QeVeeIs99Qfg5YCF+TidwNdjvaKZX19NZ/e6oz" crossorigin="anonymous">
+  </script>
+</body>
+
+</html>
+
+---------------------------------------------------------------------------------------------------------------------
+-------------------------------------------Django: form part2---------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------
+Django official link form details=> https://docs.djangoproject.com/en/4.2/ref/forms/fields/
+----------------------------------------------------------------------------------------------------------------------
+first_app:: forms.py=>  user_name = forms.CharField(required=True, label="User Name:" , initial="Ashraful" )
+----------------------------
+from django import forms
+
+class user_form(forms.Form):
+
+    # <div class="m-2 p-2">
+    #             <label for="">Name:</label>
+    #             <input type="text" name="" value="" placeholder="Type Your Name" class="form-control btn btn-outline-warning" >
+    # </div>
+    user_name = forms.CharField(required=True, label="User Name:" , initial="Ashraful" )
+
+
+
+    # <div class="m-2 p-2">
+    #             <label for="">Email:</label>
+    #             <input type="email" name="" value="" placeholder="Type Your Email" class="form-control btn btn-outline-warning" >
+    # </div>
+    user_email = forms.EmailField()
+----------------------------------------------------------------------------------------------------------------------
+---------------------------------------Django: form part3-------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------
+=> How to write html form attributes with django form class =>  user_name = forms.CharField(required=True, label="User Name:"  ,widget=forms.TextInput(attrs={'placeholder':"Enter Your Name:"}))
+------------------------------------------------------------------
+first_app::forms.py=>
+-------------------------
+from django import forms
+
+class user_form(forms.Form):
+
+    # <div class="m-2 p-2">
+    #             <label for="">Name:</label>
+    #             <input type="text" name="" value="" placeholder="Type Your Name" class="form-control btn btn-outline-warning" >
+    # </div>
+    user_name = forms.CharField(required=True, label="User Name:", widget=forms.TextInput(attrs={'placeholder':"Enter Your Name:",'style':'color:red'}))
+
+
+
+    # <div class="m-2 p-2">
+    #             <label for="">Email:</label>
+    #             <input type="email" name="" value="" placeholder="Type Your Email" class="form-control btn btn-outline-warning" >
+    # </div>
+    user_email = forms.EmailField(label="User Email:", widget=forms.TextInput(attrs={'placeholder':"Enter Your Email:",'style':'color:green'}))
+
+    user_dob = forms.DateField(label='Select Your BirthDate:', widget=forms.TextInput(attrs={'type':'date'}))
+------------------------------------------
+template::first_app::forms.py=>
+------------------------------------------
+<!doctype html>
+<html lang="en">
+{% load static %}
+<head>
+  <title>Title</title>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Bootstrap CSS v5.2.1 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+
+</head>
+
+<body>
+   <div class="container">
+   <div class="row">
+    <div class="col-md-12">
+        <h1 class="text-center">Form</h1>
+        <hr>
+        <form action="" method="" enctype="multipart/form-data " class="bg-danger" >
+            
+            <div class="m-2 p-2">
+                <label for="">Name:</label>
+                <input type="text" name="" value="" placeholder="Type Your Name" class="form-control btn btn-outline-warning" >
+            </div>
+            <div class="m-2 p-2">
+                <label for="">Email:</label>
+                <input type="email" name="" value="" placeholder="Type Your Email" class="form-control btn btn-outline-warning" >
+            </div>
+            
+            <div class="d-flex justify-content-center">
+                <input type="submit" class=" btn btn-dark " >
+            </div>
+                
+            
+    
+        </form>
+        <br>
+        <hr>
+
+        <h1>{{heading1}}</h1>
+        <form action="" method="">
+            {{test_form.as_p}} <!-- .as_p show all form field as paragraph -->
+
+        </form>
+    </div>
+   </div>
+
+   </div>
+  <!-- Bootstrap JavaScript Libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
+    integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous">
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.min.js"
+    integrity="sha384-7VPbUDkoPSGFnVtYi0QogXtr74QeVeeIs99Qfg5YCF+TidwNdjvaKZX19NZ/e6oz" crossorigin="anonymous">
+  </script>
+</body>
+
+</html>
+------------------------------------------
+----------------------------------------------------------------------------------------------------------------------
+--------------------------------------------Form Submission--------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------
+first_app:: forms.py=>
+----------------------
+from django import forms
+
+class user_form(forms.Form):
+
+    user_name = forms.CharField(required=True, label="User Name:", widget=forms.TextInput(attrs={'placeholder':"Enter Your Name:",'style':'color:red'}))
+
+    user_email = forms.EmailField(label="User Email:", widget=forms.TextInput(attrs={'placeholder':"Enter Your Email:",'style':'color:green'}))
+
+    user_dob = forms.DateField(label='Select Your BirthDate:', widget=forms.TextInput(attrs={'type':'date'}))
+----------------------
+
+first_app::views.py=>
+----------------------
+from django.shortcuts import render
+from django.http import HttpResponse
+from first_app.models import Musician, Album
+from first_app import forms
+
+def index(request):
+    # SELECT * FROM Musician ORDER BY first_name #raw MySQL query
+    musician_list = Musician.objects.order_by('first_name') #ORM
+    dictionary ={"Musician_List":"All Musician's","musician":musician_list}
+    return render(request,'first_app/index.html',context=dictionary)
+
+def form(request):
+    new_form = forms.user_form() #new_form is a object of user_form(class). and pass all class property(input field) into html template.
+    dictionary={'test_form':new_form,'heading1_form':"Django Default Forms!"}
+
+    #if form submitted then update the dictionary value :
+
+    if request.method == 'POST':
+        new_form = forms.user_form(request.POST)
+
+        if new_form.is_valid():
+            user_name = new_form.cleaned_data['user_name'] #user_name,user_email,user_dob => is the variable from user_form() in forms.py file.
+            user_email = new_form.cleaned_data['user_email']
+            user_dob = new_form.cleaned_data['user_dob']
+
+            dictionary.update({'user_name':user_name})
+            dictionary.update({'user_email':user_email})
+            dictionary.update({'user_dob':user_dob})
+            dictionary.update({'form_submit':"Yes"})
+
+
+
+    return render(request, 'first_app/form.html',context=dictionary)
+------------------------------------
+template::first_app::form.html=>
+----------------------------------
+<!doctype html>
+<html lang="en">
+{% load static %}
+<head>
+  <title>Title</title>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Bootstrap CSS v5.2.1 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+
+</head>
+
+<body>
+   <div class="container">
+   <div class="row">
+    <div class="col-md-12">
+        <h1>{{heading1}}</h1>
+        <form action="" method="POST">
+            {{test_form.as_p}} <!-- .as_p show all form field as paragraph -->
+            {% csrf_token %}
+            <div class="d-flex justify-content-center">
+                <input type="submit" class=" btn btn-dark " >
+            </div>
+        </form>
+        <hr>
+        {% if form_submit %}
+            <p>{{user_name}}</p>
+            <p>{{user_email}}</p>
+            <p>{{user_dob}}</p>
+        {% endif %}
+
+    </div>
+   </div>
+
+   </div>
+  <!-- Bootstrap JavaScript Libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
+    integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous">
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.min.js"
+    integrity="sha384-7VPbUDkoPSGFnVtYi0QogXtr74QeVeeIs99Qfg5YCF+TidwNdjvaKZX19NZ/e6oz" crossorigin="anonymous">
+  </script>
+</body>
+
+</html>
+---------------------------------------------End Form Submission-------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------
+---------------------------------------------Some input field -------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------
+first_app:: forms.py=>
+-----------------------------
+from django import forms
+
+class user_form(forms.Form):
+
+    # field = forms.BooleanField(required=False) #CheckBox : return value as true / false
+    # field = forms.CharField(min_length=1,max_length=10) #String Limit : string size 1-10
+    #  
+    # rating=(
+    #     ("Bad",1),
+    #     ("Not Bad",2),
+    #     ("Good",3),
+    #     ("Very Good",4),
+    #     ("Awesome",5),
+    # )
+    # field = forms.ChoiceField(choices=rating) # select - option , as like html.
+    # choice = (('A','A'),('B','B'),('C','C'))
+    # field= forms.ChoiceField(choices=choice, widget=forms.RadioSelect) #can select 1 item at a time.
+    choice = (('A','A'),('B','B'),('C','C'))
+    field= forms.MultipleChoiceField(choices=choice, widget=forms.CheckboxSelectMultiple) #can select Multiple item and return list[items].
+    
+
+-----------------------------
+first_app:: views.py=>
+-----------------------------
+from django.shortcuts import render
+from django.http import HttpResponse
+from first_app.models import Musician, Album
+from first_app import forms
+
+def index(request):
+    # SELECT * FROM Musician ORDER BY first_name #raw MySQL query
+    musician_list = Musician.objects.order_by('first_name') #ORM
+    dictionary ={"Musician_List":"All Musician's","musician":musician_list}
+    return render(request,'first_app/index.html',context=dictionary)
+
+def form(request):
+    new_form = forms.user_form()
+    dictionary={'test_form':new_form,'heading1_form':"Django Default Forms!"}
+
+    #if form submitted then update the dictionary value :
+
+    if request.method == 'POST':
+        new_form = forms.user_form(request.POST)
+
+        if new_form.is_valid():
+            field = new_form.cleaned_data['field'] #field => is the variable from user_form() in forms.py file.
+         
+
+            dictionary.update({'field': field})
+            
+            dictionary.update({'form_submit':"Yes"})
+
+
+
+    return render(request, 'first_app/form.html',context=dictionary)
+-----------------------------
+template::first_app:: form.html=>
+-----------------------------
+<!doctype html>
+<html lang="en">
+{% load static %}
+<head>
+  <title>Title</title>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Bootstrap CSS v5.2.1 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+
+</head>
+
+<body>
+   <div class="container">
+   <div class="row">
+    <div class="col-md-12">
+        <h1>{{heading1}}</h1>
+        <form action="" method="POST">
+            {{test_form.as_p}} <!-- .as_p show all form field as paragraph -->
+            {% csrf_token %}
+            <div class="d-flex justify-content-center">
+                <input type="submit" class=" btn btn-dark " >
+            </div>
+        </form>
+        <hr>
+        {% if form_submit %}
+            <p>{{field}}</p>
+           
+        {% endif %}
+
+    </div>
+   </div>
+
+   </div>
+  <!-- Bootstrap JavaScript Libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
+    integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous">
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.min.js"
+    integrity="sha384-7VPbUDkoPSGFnVtYi0QogXtr74QeVeeIs99Qfg5YCF+TidwNdjvaKZX19NZ/e6oz" crossorigin="anonymous">
+  </script>
+</body>
+
+</html>
+-----------------------------
+----------------------------------------------------------------------------------------------------------------------
+------------------------------------------------Form Validation----------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------
+first_app::forms.py=>
+----------------------------------------
+from django import forms
+from django.core import validators
+
+#functino for custom validators:
+def even_number(value):
+   if value%2==1:
+      raise forms.ValidationError("Number should be Even!")
+class user_form(forms.Form):
+
+   #django default validations:
+   name = forms.CharField(validators=[validators.MaxLengthValidator(10),validators.MinLengthValidator(3)])
+   number = forms.IntegerField(validators=[validators.MaxValueValidator(10),validators.MinValueValidator(1)])
+
+   #custom validations:
+
+   even_number= forms.IntegerField(validators=[even_number])
+
+   #email validators:
+
+   user_email = forms.EmailField()
+   user_vmail = forms.EmailField()
+
+   def clean(self):
+      all_cleaned_data = super().clean() #this super ().clean() -> store user_email, user_vmail , other class variable...
+
+      user_email=all_cleaned_data['user_email']
+      user_vmail=all_cleaned_data['user_vmail']
+
+      if user_email != user_vmail :
+         raise forms.ValidationError("Email don't match!")
+         
+         
+----------------------------------------
+first_app::views.py=>
+----------------------------------------
+from django.shortcuts import render
+from django.http import HttpResponse
+from first_app.models import Musician, Album
+from first_app import forms
+
+def index(request):
+    # SELECT * FROM Musician ORDER BY first_name #raw MySQL query
+    musician_list = Musician.objects.order_by('first_name') #ORM
+    dictionary ={"Musician_List":"All Musician's","musician":musician_list}
+    return render(request,'first_app/index.html',context=dictionary)
+
+def form(request):
+    new_form = forms.user_form()
+    dictionary={'test_form':new_form,'heading1_form':"Django Default Forms!"}
+
+    #if form submitted then update the dictionary value :
+
+    if request.method == 'POST':
+        new_form = forms.user_form(request.POST)
+        dictionary.update({'test_form':new_form,})
+
+        if new_form.is_valid():
+            
+            # field = new_form.cleaned_data['field'] #field => is the variable from user_form() in forms.py file.
+            field = new_form.cleaned_data['name'] 
+            number = new_form.cleaned_data['number'] 
+            even_number = new_form.cleaned_data['even_number']
+
+
+            user_email = new_form.cleaned_data['user_email']
+            user_vmail = new_form.cleaned_data['user_vmail']
+         
+
+            dictionary.update({'field': field})
+            dictionary.update({'number': number})
+            dictionary.update({'even_number': even_number})
+            dictionary.update({'user_email': user_email})
+            dictionary.update({'user_vmail': user_vmail})
+            dictionary.update({'email': "Email Match!"})
+            
+            
+            
+            dictionary.update({'form_submit':"Yes"})
+
+
+
+    return render(request, 'first_app/form.html',context=dictionary)
+----------------------------------------
+template:::first_app:::form.html=>
+----------------------------------------
+<!doctype html>
+<html lang="en">
+{% load static %}
+<head>
+  <title>Title</title>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Bootstrap CSS v5.2.1 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+
+</head>
+
+<body>
+   <div class="container">
+   <div class="row">
+    <div class="col-md-12">
+        <h1>{{heading1}}</h1>
+        <form action="" method="POST">
+            {{test_form.as_p}} <!-- .as_p show all form field as paragraph -->
+            {% csrf_token %}
+            <div class="d-flex justify-content-center">
+                <input type="submit" class=" btn btn-dark " >
+            </div>
+        </form>
+        <hr>
+        {% if form_submit %}
+            <p>{{field}}</p>
+            <p>{{number}}</p>
+            <p>{{even_number}}</p>
+            <p>{{email}}</p>
+           
+        {% endif %}
+
+    </div>
+   </div>
+
+   </div>
+  <!-- Bootstrap JavaScript Libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
+    integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous">
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.min.js"
+    integrity="sha384-7VPbUDkoPSGFnVtYi0QogXtr74QeVeeIs99Qfg5YCF+TidwNdjvaKZX19NZ/e6oz" crossorigin="anonymous">
+  </script>
+</body>
+
+</html>
+----------------------------------------
+
+----------------------------------------------------------------------------------------------------------------------
+------------------------------------------------End Form Validation----------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------Django Model Forms-----------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------
+first_app:: models.py=>
+---------------------------
+from django.db import models
+
+# Create your models here.
+
+class Musician(models.Model):
+    # id=models.AutoField(primary_key=True) #this line django take autometically
+    first_name = models.CharField(max_length=50)
+    last_name = models.CharField(max_length=50)
+    instrument = models.CharField(max_length=50)
+
+    #show the variable :
+    def __str__(self):
+        return self.first_name+" "+self.last_name
+
+class Album(models.Model):
+    # id=models.AutoField(primary_key=True) #this line django take autometically
+    artist = models.ForeignKey('Musician',on_delete=models.CASCADE) #ForeignKey add
+    name = models.CharField(max_length=50)
+    release_date = models.DateField()
+
+    #rating opetions:
+    rating=(
+        (1,"Bad"),
+        (2,"Not Bad"),
+        (3,"Good"),
+        (4,"Very Good"),
+        (5,"Awesome"),
+    )
+    num_star = models.IntegerField(choices=rating) #add rating option here
+
+     #show the variable :
+    def __str__(self):
+        return self.name+" ,Rating:  "+str(self.num_star)
+
+
+
+---------------------------
+first_app::forms.py=>
+---------------------------
+
+from django import forms
+from first_app import models
+
+class MusicianForm(forms.ModelForm):
+    class Meta:
+        model = models.Musician
+        fields = "__all__"  # Corrected attribute name
+      #   fields = ('first_name','last_name') # if we need some field then use this line.
+      #   exclude = ['first_name','last_name'] # if we need without this two fields then use this line.
+
+
+
+
+-----------------------------------
+first_app:: views.py=>
+-----------------------------------
+from django.shortcuts import render
+from django.http import HttpResponse
+from first_app.models import Musician, Album
+from first_app import forms
+
+def index(request):
+    # SELECT * FROM Musician ORDER BY first_name #raw MySQL query
+    musician_list = Musician.objects.order_by('first_name') #ORM
+    dictionary ={"Musician_List":"All Musician's","musician":musician_list}
+    return render(request,'first_app/index.html',context=dictionary)
+
+def form(request):
+    new_form = forms.MusicianForm()
+    dictionary={'test_form':new_form,'heading1_form':"Django Default Forms!"}
+
+    if request.method == 'POST':
+        new_form = forms.MusicianForm(request.POST)
+       
+
+        if new_form.is_valid():
+            new_form.save(commit=True) # form field save to the DataBase.
+            return index(request) #redirect to index(request) <-views.
+
+
+    return render(request, 'first_app/form.html',context=dictionary)
+-----------------------------------
+My_First_Project:: template:: form.html=>
+-----------------------------------
+<!doctype html>
+<html lang="en">
+{% load static %}
+<head>
+  <title>Title</title>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Bootstrap CSS v5.2.1 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+
+</head>
+
+<body>
+   <div class="container">
+   <div class="row">
+    <div class="col-md-12">
+        <h1>{{heading1}}</h1>
+        <form action="" method="POST">
+            {{test_form.as_p}} <!-- .as_p show all form field as paragraph -->
+            {% csrf_token %}
+            <div class="d-flex justify-content-center">
+                <input type="submit" class=" btn btn-dark " >
+            </div>
+        </form>
+        <hr>
+        
+
+    </div>
+   </div>
+
+   </div>
+  <!-- Bootstrap JavaScript Libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
+    integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous">
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.min.js"
+    integrity="sha384-7VPbUDkoPSGFnVtYi0QogXtr74QeVeeIs99Qfg5YCF+TidwNdjvaKZX19NZ/e6oz" crossorigin="anonymous">
+  </script>
+</body>
+
+</html>
+-----------------------------------
+My_First_Project:: template:: index.html=>
+------------------------------------------
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{Musician_List}}</title>
+    <link rel="stylesheet" href="{% static 'css/color.css' %}" >
+</head>
+<body>
+    <a href="/first_app/form/">Add Musician</a>
+
+
+
+    <h1 align="center">{{Musician_List}}</h1>
+        <table align="center" style="border:1px solid black; border-radius:10px;">
+            <thead>
+                <tr>
+                    <th scope="col">First Name</th>
+                    <th scope="col">Last Name</th>
+                    <th scope="col">Instrument</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in musician %}
+
+                <tr >
+                    <td>{{row.first_name}}</td>
+                    <td>{{row.last_name}}</td>
+                    <td>{{row.instrument}}</td>
+                </tr>
+                {% endfor %}
+               
+            </tbody>
+            
+        </table>
+    
+    
+    
+</body>
+</html>
+-----------------------------------
+
+
+
+-----------------------------------------------End Django Model Forms-----------------------------------------------------------------------
